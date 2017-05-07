@@ -36,8 +36,8 @@ public class HexGrid : MonoBehaviour {
         hexMesh = GetComponentInChildren<HexMesh>();
 
         cells = new HexCell[height * width];
-        for (int z = 0, i = 0; z < height; ++z) {
-            for(int x = 0; x < width; ++x)
+        for (int z = 0, i = 0; z < height; z++) {
+            for(int x = 0; x < width; x++)
             {
                 CreateCell(x, z, i++);
             }
@@ -58,6 +58,26 @@ public class HexGrid : MonoBehaviour {
         cell.transform.localPosition = position;
 		cell.coordinates = HexCoordinates.FromOffsetCoordinates (x, z);
 		cell.color = defaultColor;
+
+		//set neighbors
+		if (x > 0) {
+			cell.SetNeighbor(HexDirection.W, cells[i - 1]);
+		}
+
+
+		if (z > 0) {
+			if ((z & 1) == 0) {
+				cell.SetNeighbor (HexDirection.SE, cells [i - width]);
+				if (x > 0) {
+					cell.SetNeighbor (HexDirection.SW, cells [i - width - 1]);
+				}
+			} else {
+				cell.SetNeighbor (HexDirection.SW, cells [i - width]);
+				if (x < width - 1) {
+					cell.SetNeighbor (HexDirection.SE, cells [i - width + 1]);
+				}
+			}
+		}
 
         //position label
         Text label = Instantiate<Text>(cellLabelPrefab);
